@@ -24,5 +24,17 @@ const canvas = document.querySelector("canvas.webgl");
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
 });
+
 renderer.setSize(sizes.width, sizes.height);
-renderer.render(scene, camera);
+
+/**
+ * Animate
+ */
+const tick = () => {
+  mesh.rotation.y += 0.02;
+  mesh.rotation.z += 0.01;
+  renderer.render(scene, camera);
+  window.requestAnimationFrame(tick);
+};
+
+tick();
