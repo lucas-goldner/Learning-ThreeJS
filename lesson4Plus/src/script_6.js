@@ -30,9 +30,17 @@ renderer.setSize(sizes.width, sizes.height);
 /**
  * Animate
  */
+
+let time = Date.now();
+
 const tick = () => {
-  mesh.rotation.y += 0.02;
-  mesh.rotation.z += 0.01;
+  //Time
+  const currentTime = Date.now();
+  const deltaTime = currentTime - time;
+  time = currentTime;
+
+  mesh.rotation.y += 0.02 * deltaTime * 0.05;
+  mesh.rotation.z += 0.01 * deltaTime * 0.05;
   renderer.render(scene, camera);
   window.requestAnimationFrame(tick);
 };
