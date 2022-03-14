@@ -17,7 +17,8 @@ jobs:
       matrix:
         node-version: [12.x, 14.x, 16.x]
     steps:
-    - run: cd lesson4Plus && npm i
+    - run: cd lesson4Plus/ 
+    - run: npm i
     - run: npm run build
     - name: Deploy Github Pages
       uses: ptienchuan/deploy-github-pages-action@1.0.0
