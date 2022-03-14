@@ -1,27 +1,19 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-
-
-
-name: Build and deploy 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+name: Build and Deploy
+on: [push]
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 16.x]
     steps:
-    - run: cd lesson4Plus/ 
-    - run: npm i
-    - run: npm run build
-    - name: Deploy Github Pages
-      uses: ptienchuan/deploy-github-pages-action@1.0.0
-      with:
-        source-directory: /lesson4Plus/dist/
-        target-branch: master
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+      - name: Change into folder
+      - run: cd lesson4Plus/
+      - name: Install and Build 
+        run: |
+          npm ci
+          npm run build
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: dist # The folder the action should deploy.
