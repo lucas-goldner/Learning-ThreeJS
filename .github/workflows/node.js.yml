@@ -27,7 +27,7 @@ jobs:
     - run: cd lesson4Plus && npm i
     - run: npm run build
     - name: Deploy Github Pages
-    - uses: ptienchuan/deploy-github-pages-action@1.0.0
+      uses: ptienchuan/deploy-github-pages-action@1.0.0
       with:
         source-directory: /lesson4Plus/dist/
         target-branch: master
