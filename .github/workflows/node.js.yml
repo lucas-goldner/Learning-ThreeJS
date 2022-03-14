@@ -6,7 +6,6 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
-      - name: Change into folder
       - run: cd lesson4Plus/
       - name: Install and Build 
         run: |
