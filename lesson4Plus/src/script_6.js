@@ -77,4 +77,15 @@ window.addEventListener("resize", () => {
   camera.aspect = sizes.width / sizes.height;
   camera.updateProjectionMatrix();
   renderer.setSize(sizes.width, sizes.height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+window.addEventListener("dblclick", () => {
+  if (!document.fullscreenElement) {
+    console.log("go fullscreen");
+    canvas.requestFullscreen();
+  } else {
+    console.log("leave fullscreen");
+    document.exitFullscreen();
+  }
 });
