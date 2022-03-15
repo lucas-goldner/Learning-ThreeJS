@@ -1,7 +1,12 @@
 import "./style.css";
 import * as THREE from "three";
-import gsap from "gsap";
+import * as dat from "lil-gui";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+/**
+ * Debug
+ */
+const gui = new dat.GUI();
 
 //Scene
 const scene = new THREE.Scene();
@@ -38,6 +43,17 @@ bufferGeo.setAttribute("position", positionsAttribute);
 const bufferMesh = new THREE.Mesh(bufferGeo, material);
 bufferMesh.position.x = -4;
 scene.add(bufferMesh);
+
+//Add  sliders
+const parameters = {
+  color: 0xff0000,
+};
+gui
+  .addColor(parameters, "color")
+  .name("Mat Color")
+  .onChange(() => material.color.set(parameters.color));
+gui.add(mesh.position, "y").min(-3).max(3).step(0.01).name("Cube Y");
+gui.add(mesh, "visible").name("Cube Visible");
 
 //Camera
 const sizes = {
