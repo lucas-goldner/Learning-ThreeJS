@@ -6,6 +6,14 @@
 
 ## Progress
 
+### Day 4
+
+- Today I learned about debugging with lil-gui which will be very useful in the future, when I need to try different values out
+- Imported my first textures! Used a diamond block because it fit so well haha
+- Created my own geometry, only by providing an array of numbers, amazing isn't it ?
+
+![image](https://user-images.githubusercontent.com/65627237/158486760-151a7ddd-7baa-4121-9d7f-66b4e26a69f1.png)
+
 ### Day 3
 
 - Have only completed one lesson today because I was trying to setup a pipeline for this project
