@@ -2,6 +2,7 @@ import "./style.css";
 import * as THREE from "three";
 import * as dat from "lil-gui";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import gsap from "gsap/gsap-core";
 
 /**
  * Debug
@@ -13,8 +14,14 @@ const scene = new THREE.Scene();
 
 //Object
 const geometry = new THREE.BoxGeometry(1, 1, 1, 2, 2, 2);
+const parameters = {
+  color: 0xff0000,
+  spin: () => {
+    gsap.to(mesh.rotation, { duration: 1, y: mesh.rotation.y + Math.PI * 2 });
+  },
+};
 const material = new THREE.MeshBasicMaterial({
-  color: 0xff3344,
+  color: parameters.color,
   wireframe: true,
 });
 const materialNoWF = new THREE.MeshBasicMaterial({
@@ -45,15 +52,14 @@ bufferMesh.position.x = -4;
 scene.add(bufferMesh);
 
 //Add  sliders
-const parameters = {
-  color: 0xff0000,
-};
+
 gui
   .addColor(parameters, "color")
   .name("Mat Color")
   .onChange(() => material.color.set(parameters.color));
 gui.add(mesh.position, "y").min(-3).max(3).step(0.01).name("Cube Y");
 gui.add(mesh, "visible").name("Cube Visible");
+gui.add(parameters, "spin");
 
 //Camera
 const sizes = {
