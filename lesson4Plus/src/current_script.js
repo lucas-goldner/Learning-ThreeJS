@@ -6,7 +6,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const textureLoader = new THREE.TextureLoader();
 const texture = textureLoader.load(
-  "/door.jpg",
+  "/diamond_ore.png",
   () => {
     console.log("loading finished");
   },
@@ -17,6 +17,10 @@ const texture = textureLoader.load(
     console.log("loading error");
   }
 );
+
+texture.generateMipmaps = false;
+texture.minFilter = THREE.NearestFilter;
+texture.magFilter = THREE.NearestFilter;
 
 //Scene
 const scene = new THREE.Scene();
