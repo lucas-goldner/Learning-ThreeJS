@@ -7,12 +7,38 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 const scene = new THREE.Scene();
 
 //Object
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const geometry = new THREE.BoxGeometry(1, 1, 1, 2, 2, 2);
+const material = new THREE.MeshBasicMaterial({
+  color: 0xff3344,
+  wireframe: true,
+});
 const mesh = new THREE.Mesh(geometry, material);
 mesh.rotateX(2);
 mesh.rotateZ(2);
 scene.add(mesh);
+
+const cigeometry = new THREE.SphereGeometry(1, 32, 32);
+const cimesh = new THREE.Mesh(cigeometry, material);
+cimesh.position.x = 2;
+scene.add(cimesh);
+
+const bufferGeo = new THREE.BufferGeometry();
+const positionsArray = new Float32Array([
+  0,
+  0,
+  0, // First vertex
+  0,
+  1,
+  0, // Second vertex
+  1,
+  0,
+  0, // Third vertex
+]);
+const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3);
+bufferGeo.setAttribute("position", positionsAttribute);
+const bufferMesh = new THREE.Mesh(bufferGeo, material);
+bufferMesh.position.x = -2;
+scene.add(bufferMesh);
 
 //Camera
 const sizes = {
