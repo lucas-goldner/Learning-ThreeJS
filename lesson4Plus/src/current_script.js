@@ -6,7 +6,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const textureLoader = new THREE.TextureLoader();
 const texture = textureLoader.load(
-  "/diamond_ore.png",
+  "./diamond_ore.png",
   () => {
     console.log("loading finished");
   },
