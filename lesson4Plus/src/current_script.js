@@ -20,19 +20,26 @@ material.opacity = 0.5;
 material.transparent = true;
 material.alphaMap = diamondTex;
 material.side = THREE.DoubleSide;
+
+//Normal mesh
 const normalMaterial = new THREE.MeshNormalMaterial();
+normalMaterial.flatShading = true;
+
+//Matcap mesh
+const matcapMaterial = new THREE.MeshMatcapMaterial();
+matcapMaterial.matcap = diamondTex;
 
 const sphere = new THREE.Mesh(
   new THREE.SphereGeometry(0.5, 16, 16),
-  normalMaterial
+  matcapMaterial
 );
 sphere.position.x = -1.5;
 
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), normalMaterial);
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), matcapMaterial);
 
 const torus = new THREE.Mesh(
   new THREE.TorusGeometry(0.3, 0.2, 16, 32),
-  normalMaterial
+  matcapMaterial
 );
 torus.position.x = 1.5;
 
