@@ -18,6 +18,9 @@ const matcapTexture4 = textureLoader.load("./matcaps/5.png");
 const matcapTexture5 = textureLoader.load("./matcaps/6.png");
 const matcapTexture6 = textureLoader.load("./matcaps/7.png");
 const matcapTexture7 = textureLoader.load("./matcaps/8.png");
+const spaceBG = textureLoader.load("./space.jpeg");
+
+scene.background = spaceBG;
 
 //Object
 const material = new THREE.MeshBasicMaterial({ map: diamondTex });
