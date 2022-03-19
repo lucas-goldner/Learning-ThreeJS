@@ -6,6 +6,15 @@
 
 ## Progress
 
+## Day 5
+
+- Today I made a deep dive into different kind of materials
+- Converted a font to typeface and used it to create a 3D Text
+
+![image](https://user-images.githubusercontent.com/65627237/159141466-aae96677-f04e-46e9-bda4-5f220e5800f9.png)
+![image](https://user-images.githubusercontent.com/65627237/159141455-fe0b326b-24d1-4855-956c-11da36093610.png)
+
+
 ### Day 4
 
 - Today I learned about debugging with lil-gui which will be very useful in the future, when I need to try different values out
