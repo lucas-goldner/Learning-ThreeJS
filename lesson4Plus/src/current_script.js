@@ -11,6 +11,13 @@ const diamondTex = textureLoader.load("./diamond_ore.png");
 diamondTex.generateMipmaps = false;
 diamondTex.minFilter = THREE.NearestFilter;
 diamondTex.magFilter = THREE.NearestFilter;
+const matcapTexture1 = textureLoader.load("./matcaps/2.png");
+const matcapTexture2 = textureLoader.load("./matcaps/3.png");
+const matcapTexture3 = textureLoader.load("./matcaps/4.png");
+const matcapTexture4 = textureLoader.load("./matcaps/5.png");
+const matcapTexture5 = textureLoader.load("./matcaps/6.png");
+const matcapTexture6 = textureLoader.load("./matcaps/7.png");
+const matcapTexture7 = textureLoader.load("./matcaps/8.png");
 
 //Object
 const material = new THREE.MeshBasicMaterial({ map: diamondTex });
@@ -27,7 +34,7 @@ normalMaterial.flatShading = true;
 
 //Matcap mesh
 const matcapMaterial = new THREE.MeshMatcapMaterial();
-matcapMaterial.matcap = diamondTex;
+matcapMaterial.matcap = matcapTexture7;
 
 const sphere = new THREE.Mesh(
   new THREE.SphereGeometry(0.5, 16, 16),
