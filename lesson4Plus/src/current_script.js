@@ -14,6 +14,7 @@ diamondTex.magFilter = THREE.NearestFilter;
 
 //Object
 const material = new THREE.MeshBasicMaterial({ map: diamondTex });
+material.color = new THREE.Color("#ff0000");
 
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
 sphere.position.x = -1.5;
