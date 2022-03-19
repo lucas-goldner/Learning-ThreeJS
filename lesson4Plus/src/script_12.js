@@ -2,31 +2,36 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+//Image
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load(
+  "./diamond_ore.png",
+  () => {
+    console.log("loading finished");
+  },
+  () => {
+    console.log("loading progressing");
+  },
+  () => {
+    console.log("loading error");
+  }
+);
+
+texture.generateMipmaps = false;
+texture.minFilter = THREE.NearestFilter;
+texture.magFilter = THREE.NearestFilter;
+
 //Scene
 const scene = new THREE.Scene();
 
-//Texture
-const textureLoader = new THREE.TextureLoader();
-const diamondTex = textureLoader.load("./diamond_ore.png");
-diamondTex.generateMipmaps = false;
-diamondTex.minFilter = THREE.NearestFilter;
-diamondTex.magFilter = THREE.NearestFilter;
-
 //Object
-const material = new THREE.MeshBasicMaterial({ map: diamondTex });
-
-const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
-sphere.position.x = -1.5;
-
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
-
-const torus = new THREE.Mesh(
-  new THREE.TorusGeometry(0.3, 0.2, 16, 32),
-  material
-);
-torus.position.x = 1.5;
-
-scene.add(sphere, plane, torus);
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const texMaterial = new THREE.MeshBasicMaterial({ map: texture });
+const mesh = new THREE.Mesh(geometry, texMaterial);
+mesh.rotateX(2);
+mesh.rotateZ(2);
+scene.add(mesh);
 
 //Camera
 const sizes = {
@@ -41,7 +46,7 @@ const camera = new THREE.PerspectiveCamera(
 );
 
 camera.position.z = 3;
-camera.lookAt(sphere.position);
+camera.lookAt(mesh.position);
 scene.add(camera);
 
 //Renderer
@@ -56,23 +61,11 @@ renderer.setSize(sizes.width, sizes.height);
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 
-const clock = new THREE.Clock();
-
 const tick = () => {
-  const elapsedTime = clock.getElapsedTime();
-
-  // Update objects
-  sphere.rotation.y = 0.1 * elapsedTime;
-  plane.rotation.y = 0.1 * elapsedTime;
-  torus.rotation.y = 0.1 * elapsedTime;
-
-  sphere.rotation.x = 0.15 * elapsedTime;
-  plane.rotation.x = 0.15 * elapsedTime;
-  torus.rotation.x = 0.15 * elapsedTime;
-
   renderer.render(scene, camera);
   window.requestAnimationFrame(tick);
   controls.update();
+  camera.lookAt(mesh.position);
 };
 
 tick();
