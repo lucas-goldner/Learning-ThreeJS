@@ -15,15 +15,24 @@ diamondTex.magFilter = THREE.NearestFilter;
 //Object
 const material = new THREE.MeshBasicMaterial({ map: diamondTex });
 material.color = new THREE.Color("#ff0000");
+material.transparent = true;
+material.opacity = 0.5;
+material.transparent = true;
+material.alphaMap = diamondTex;
+material.side = THREE.DoubleSide;
+const normalMaterial = new THREE.MeshNormalMaterial();
 
-const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
+const sphere = new THREE.Mesh(
+  new THREE.SphereGeometry(0.5, 16, 16),
+  normalMaterial
+);
 sphere.position.x = -1.5;
 
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), normalMaterial);
 
 const torus = new THREE.Mesh(
   new THREE.TorusGeometry(0.3, 0.2, 16, 32),
-  material
+  normalMaterial
 );
 torus.position.x = 1.5;
 
