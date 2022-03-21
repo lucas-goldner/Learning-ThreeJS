@@ -6,6 +6,14 @@
 
 ## Progress
 
+## Day 6
+
+- Today I learned about lights and shadows. Some of them provider helpers which can be useful to visualize where the light is going.
+- Also created a performant nice fake shadow by shadow-baking my texture.
+
+![image](https://user-images.githubusercontent.com/65627237/159374034-cdd54c82-7a14-4579-95d9-95c90dc4461d.png)
+
+
 ## Day 5
 
 - Today I made a deep dive into different kind of materials
