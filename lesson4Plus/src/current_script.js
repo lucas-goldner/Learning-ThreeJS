@@ -1,52 +1,98 @@
 import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
-
-//Get the fonts with http://gero3.github.io/facetype.js/
+import * as dat from "lil-gui";
+import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
 
 //Scene
+const gui = new dat.GUI();
 const scene = new THREE.Scene();
 
-//Objects
-const fontLoader = new FontLoader();
+//Texture
 const textureLoader = new THREE.TextureLoader();
-const matcapTexture = textureLoader.load("./matcaps/8.png");
+const diamondTex = textureLoader.load("./diamond_ore.png");
+diamondTex.generateMipmaps = false;
+diamondTex.minFilter = THREE.NearestFilter;
+diamondTex.magFilter = THREE.NearestFilter;
 
-fontLoader.load("./typeface/helvetiker_regular.typeface.json", (font) => {
-  const textGeometry = new TextGeometry("Donuts", {
-    font: font,
-    size: 0.5,
-    height: 0.2,
-    curveSegments: 12,
-    bevelEnabled: true,
-    bevelThickness: 0.1,
-    bevelSize: 0.02,
-    bevelOffset: 0,
-    bevelSegments: 50,
-  });
-  const textMaterial = new THREE.MeshMatcapMaterial({ matcap: matcapTexture });
-  textGeometry.computeBoundingBox();
-  console.log(textGeometry.boundingBox);
-  const text = new THREE.Mesh(textGeometry, textMaterial);
-  textGeometry.center();
-  scene.add(text);
+//For more matcap textures visit https://github.com/nidorx/matcaps
+const doorColorTexture = textureLoader.load("./door/color.jpg");
+const doorAlphaTexture = textureLoader.load("./door/alpha.jpg");
+const doorAmbientOcclusionTexture = textureLoader.load(
+  "./door/ambientOcclusion.jpg"
+);
+const doorHeightTexture = textureLoader.load("./door/height.jpg");
+const doorNormalTexture = textureLoader.load("./door/normal.jpg");
+const doorMetalnessTexture = textureLoader.load("./door/metalness.jpg");
+const doorRoughnessTexture = textureLoader.load("./door/roughness.jpg");
+const matcapTexture1 = textureLoader.load("./matcaps/2.png");
+const matcapTexture2 = textureLoader.load("./matcaps/3.png");
+const matcapTexture3 = textureLoader.load("./matcaps/4.png");
+const matcapTexture4 = textureLoader.load("./matcaps/5.png");
+const matcapTexture5 = textureLoader.load("./matcaps/6.png");
+const matcapTexture6 = textureLoader.load("./matcaps/7.png");
+const matcapTexture7 = textureLoader.load("./matcaps/8.png");
+const gradientTexture3 = textureLoader.load("./gradients/3.jpg");
+const gradientTexture5 = textureLoader.load("./gradients/5.jpg");
+const spaceBG = textureLoader.load("./space.jpeg");
 
-  const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
+const cubeTextureLoader = new THREE.CubeTextureLoader();
 
-  for (let i = 0; i < 100; i++) {
-    const donut = new THREE.Mesh(donutGeometry, textMaterial);
-    donut.position.x = (Math.random() - 0.5) * 10;
-    donut.position.y = (Math.random() - 0.5) * 10;
-    donut.position.z = (Math.random() - 0.5) * 10;
-    donut.rotation.x = Math.random() * Math.PI;
-    donut.rotation.y = Math.random() * Math.PI;
-    const scale = Math.random();
-    donut.scale.set(scale, scale, scale);
-    scene.add(donut);
-  }
-});
+//For more environment maps visit https://polyhaven.com/
+const environmentMapTexture = cubeTextureLoader.load([
+  "./environmentMaps/0/px.jpg",
+  "./environmentMaps/0/nx.jpg",
+  "./environmentMaps/0/py.jpg",
+  "./environmentMaps/0/ny.jpg",
+  "./environmentMaps/0/pz.jpg",
+  "./environmentMaps/0/nz.jpg",
+]);
+
+scene.background = spaceBG;
+
+//Object
+const material = new THREE.MeshBasicMaterial({ map: diamondTex });
+material.color = new THREE.Color("#ff0000");
+material.transparent = true;
+material.opacity = 0.5;
+material.transparent = true;
+material.alphaMap = diamondTex;
+material.side = THREE.DoubleSide;
+
+//MeshStandardMaterial also gets affected by light
+const meshStandardMaterial = new THREE.MeshStandardMaterial();
+
+const sphere = new THREE.Mesh(
+  new THREE.SphereGeometry(0.5, 16, 16),
+  meshStandardMaterial
+);
+sphere.position.x = -1.5;
+
+const plane = new THREE.Mesh(
+  new THREE.PlaneGeometry(1, 1),
+  meshStandardMaterial
+);
+
+const torus = new THREE.Mesh(
+  new THREE.TorusGeometry(0.3, 0.2, 16, 32),
+  meshStandardMaterial
+);
+
+torus.position.x = 1.5;
+sphere.geometry.setAttribute(
+  "uv2",
+  new THREE.BufferAttribute(sphere.geometry.attributes.uv.array, 2)
+);
+plane.geometry.setAttribute(
+  "uv2",
+  new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+);
+torus.geometry.setAttribute(
+  "uv2",
+  new THREE.BufferAttribute(torus.geometry.attributes.uv.array, 2)
+);
+
+scene.add(sphere, plane, torus);
 
 //Camera
 const sizes = {
@@ -61,7 +107,70 @@ const camera = new THREE.PerspectiveCamera(
 );
 
 camera.position.z = 3;
+camera.lookAt(sphere.position);
 scene.add(camera);
+
+/**
+ * Lights
+ */
+
+// const ambientLight = new THREE.AmbientLight()
+// ambientLight.color = new THREE.Color(0xffffff)
+// ambientLight.intensity = 0.5
+// scene.add(ambientLight)
+
+const directionalLight = new THREE.DirectionalLight(0x00fffc, 0.3);
+scene.add(directionalLight);
+
+const hemisphereLight = new THREE.HemisphereLight(0xff0000, 0x0000ff, 0.3);
+scene.add(hemisphereLight);
+
+const pointLight = new THREE.PointLight(0xff9000, 0.5, 10, 2);
+pointLight.position.set(1, -0.5, 1);
+scene.add(pointLight);
+
+const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1);
+rectAreaLight.lookAt(new THREE.Vector3());
+scene.add(rectAreaLight);
+
+const spotLight = new THREE.SpotLight(
+  0x78ff00,
+  0.5,
+  10,
+  Math.PI * 0.1,
+  0.25,
+  1
+);
+spotLight.position.set(0, 2, 3);
+spotLight.target.position.x = -0.75;
+scene.add(spotLight.target);
+scene.add(spotLight);
+
+const hemisphereLightHelper = new THREE.HemisphereLightHelper(
+  hemisphereLight,
+  0.2
+);
+scene.add(hemisphereLightHelper);
+
+const directionalLightHelper = new THREE.DirectionalLightHelper(
+  directionalLight,
+  0.2
+);
+scene.add(directionalLightHelper);
+
+const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.2);
+scene.add(pointLightHelper);
+
+const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+scene.add(spotLightHelper);
+window.requestAnimationFrame(() => {
+  spotLightHelper.update();
+});
+
+const rectAreaLightHelper = new RectAreaLightHelper(rectAreaLight);
+scene.add(rectAreaLightHelper);
+
+gui.add(spotLight, "intensity").min(0).max(1).step(0.001);
 
 //Renderer
 const canvas = document.querySelector("canvas.webgl");
@@ -75,7 +184,24 @@ renderer.setSize(sizes.width, sizes.height);
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 
+//Debug
+gui.add(meshStandardMaterial, "metalness").min(0).max(1).step(0.0001);
+gui.add(meshStandardMaterial, "roughness").min(0).max(1).step(0.0001);
+
+const clock = new THREE.Clock();
+
 const tick = () => {
+  const elapsedTime = clock.getElapsedTime();
+
+  // Update objects
+  sphere.rotation.y = 0.1 * elapsedTime;
+  plane.rotation.y = 0.1 * elapsedTime;
+  torus.rotation.y = 0.1 * elapsedTime;
+
+  sphere.rotation.x = 0.15 * elapsedTime;
+  plane.rotation.x = 0.15 * elapsedTime;
+  torus.rotation.x = 0.15 * elapsedTime;
+
   renderer.render(scene, camera);
   window.requestAnimationFrame(tick);
   controls.update();
