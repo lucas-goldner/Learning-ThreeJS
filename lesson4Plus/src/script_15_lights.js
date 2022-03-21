@@ -15,38 +15,11 @@ diamondTex.generateMipmaps = false;
 diamondTex.minFilter = THREE.NearestFilter;
 diamondTex.magFilter = THREE.NearestFilter;
 
-//For more matcap textures visit https://github.com/nidorx/matcaps
-const doorColorTexture = textureLoader.load("./door/color.jpg");
-const doorAlphaTexture = textureLoader.load("./door/alpha.jpg");
-const doorAmbientOcclusionTexture = textureLoader.load(
-  "./door/ambientOcclusion.jpg"
-);
-const doorHeightTexture = textureLoader.load("./door/height.jpg");
-const doorNormalTexture = textureLoader.load("./door/normal.jpg");
-const doorMetalnessTexture = textureLoader.load("./door/metalness.jpg");
-const doorRoughnessTexture = textureLoader.load("./door/roughness.jpg");
-const matcapTexture1 = textureLoader.load("./matcaps/2.png");
-const matcapTexture2 = textureLoader.load("./matcaps/3.png");
-const matcapTexture3 = textureLoader.load("./matcaps/4.png");
-const matcapTexture4 = textureLoader.load("./matcaps/5.png");
-const matcapTexture5 = textureLoader.load("./matcaps/6.png");
-const matcapTexture6 = textureLoader.load("./matcaps/7.png");
-const matcapTexture7 = textureLoader.load("./matcaps/8.png");
-const gradientTexture3 = textureLoader.load("./gradients/3.jpg");
-const gradientTexture5 = textureLoader.load("./gradients/5.jpg");
 const spaceBG = textureLoader.load("./space.jpeg");
 
 const cubeTextureLoader = new THREE.CubeTextureLoader();
 
 //For more environment maps visit https://polyhaven.com/
-const environmentMapTexture = cubeTextureLoader.load([
-  "./environmentMaps/0/px.jpg",
-  "./environmentMaps/0/nx.jpg",
-  "./environmentMaps/0/py.jpg",
-  "./environmentMaps/0/ny.jpg",
-  "./environmentMaps/0/pz.jpg",
-  "./environmentMaps/0/nz.jpg",
-]);
 
 scene.background = spaceBG;
 

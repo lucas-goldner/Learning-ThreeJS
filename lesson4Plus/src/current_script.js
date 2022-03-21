@@ -2,209 +2,210 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "lil-gui";
-import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
 
-//Scene
+/**
+ * Base
+ */
+// Debug
 const gui = new dat.GUI();
+
+// Canvas
+const canvas = document.querySelector("canvas.webgl");
+
+// Scene
 const scene = new THREE.Scene();
 
-//Texture
+/**
+ * Textures
+ */
 const textureLoader = new THREE.TextureLoader();
-const diamondTex = textureLoader.load("./diamond_ore.png");
-diamondTex.generateMipmaps = false;
-diamondTex.minFilter = THREE.NearestFilter;
-diamondTex.magFilter = THREE.NearestFilter;
-
-//For more matcap textures visit https://github.com/nidorx/matcaps
-const doorColorTexture = textureLoader.load("./door/color.jpg");
-const doorAlphaTexture = textureLoader.load("./door/alpha.jpg");
-const doorAmbientOcclusionTexture = textureLoader.load(
-  "./door/ambientOcclusion.jpg"
-);
-const doorHeightTexture = textureLoader.load("./door/height.jpg");
-const doorNormalTexture = textureLoader.load("./door/normal.jpg");
-const doorMetalnessTexture = textureLoader.load("./door/metalness.jpg");
-const doorRoughnessTexture = textureLoader.load("./door/roughness.jpg");
-const matcapTexture1 = textureLoader.load("./matcaps/2.png");
-const matcapTexture2 = textureLoader.load("./matcaps/3.png");
-const matcapTexture3 = textureLoader.load("./matcaps/4.png");
-const matcapTexture4 = textureLoader.load("./matcaps/5.png");
-const matcapTexture5 = textureLoader.load("./matcaps/6.png");
-const matcapTexture6 = textureLoader.load("./matcaps/7.png");
-const matcapTexture7 = textureLoader.load("./matcaps/8.png");
-const gradientTexture3 = textureLoader.load("./gradients/3.jpg");
-const gradientTexture5 = textureLoader.load("./gradients/5.jpg");
-const spaceBG = textureLoader.load("./space.jpeg");
-
-const cubeTextureLoader = new THREE.CubeTextureLoader();
-
-//For more environment maps visit https://polyhaven.com/
-const environmentMapTexture = cubeTextureLoader.load([
-  "./environmentMaps/0/px.jpg",
-  "./environmentMaps/0/nx.jpg",
-  "./environmentMaps/0/py.jpg",
-  "./environmentMaps/0/ny.jpg",
-  "./environmentMaps/0/pz.jpg",
-  "./environmentMaps/0/nz.jpg",
-]);
-
-scene.background = spaceBG;
-
-//Object
-const material = new THREE.MeshBasicMaterial({ map: diamondTex });
-material.color = new THREE.Color("#ff0000");
-material.transparent = true;
-material.opacity = 0.5;
-material.transparent = true;
-material.alphaMap = diamondTex;
-material.side = THREE.DoubleSide;
-
-//MeshStandardMaterial also gets affected by light
-const meshStandardMaterial = new THREE.MeshStandardMaterial();
-
-const sphere = new THREE.Mesh(
-  new THREE.SphereGeometry(0.5, 16, 16),
-  meshStandardMaterial
-);
-sphere.position.x = -1.5;
-
-const plane = new THREE.Mesh(
-  new THREE.PlaneGeometry(1, 1),
-  meshStandardMaterial
-);
-
-const torus = new THREE.Mesh(
-  new THREE.TorusGeometry(0.3, 0.2, 16, 32),
-  meshStandardMaterial
-);
-
-torus.position.x = 1.5;
-sphere.geometry.setAttribute(
-  "uv2",
-  new THREE.BufferAttribute(sphere.geometry.attributes.uv.array, 2)
-);
-plane.geometry.setAttribute(
-  "uv2",
-  new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
-);
-torus.geometry.setAttribute(
-  "uv2",
-  new THREE.BufferAttribute(torus.geometry.attributes.uv.array, 2)
-);
-
-scene.add(sphere, plane, torus);
-
-//Camera
-const sizes = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-};
-const camera = new THREE.PerspectiveCamera(
-  75,
-  sizes.width / sizes.height,
-  1,
-  100
-);
-
-camera.position.z = 3;
-camera.lookAt(sphere.position);
-scene.add(camera);
+const bakedShadow = textureLoader.load("./shadows/bakedShadow.jpg");
+const simpleShadow = textureLoader.load("./shadows/simpleShadow.jpg");
 
 /**
  * Lights
  */
+// Ambient light
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+gui.add(ambientLight, "intensity").min(0).max(1).step(0.001);
+scene.add(ambientLight);
 
-// const ambientLight = new THREE.AmbientLight()
-// ambientLight.color = new THREE.Color(0xffffff)
-// ambientLight.intensity = 0.5
-// scene.add(ambientLight)
+// Directional light
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
+directionalLight.castShadow = true;
 
-const directionalLight = new THREE.DirectionalLight(0x00fffc, 0.3);
+directionalLight.shadow.mapSize.width = 1024;
+directionalLight.shadow.mapSize.height = 1024;
+
+directionalLight.shadow.camera.near = 1;
+directionalLight.shadow.camera.far = 6;
+
+directionalLight.shadow.camera.top = 2;
+directionalLight.shadow.camera.right = 2;
+directionalLight.shadow.camera.bottom = -2;
+directionalLight.shadow.camera.left = -2;
+
+directionalLight.position.set(2, 2, -1);
+gui.add(directionalLight, "intensity").min(0).max(1).step(0.001);
+gui.add(directionalLight.position, "x").min(-5).max(5).step(0.001);
+gui.add(directionalLight.position, "y").min(-5).max(5).step(0.001);
+gui.add(directionalLight.position, "z").min(-5).max(5).step(0.001);
 scene.add(directionalLight);
 
-const hemisphereLight = new THREE.HemisphereLight(0xff0000, 0x0000ff, 0.3);
-scene.add(hemisphereLight);
+const directionalLightCameraHelper = new THREE.CameraHelper(
+  directionalLight.shadow.camera
+);
+directionalLightCameraHelper.visible = false;
+scene.add(directionalLightCameraHelper);
 
-const pointLight = new THREE.PointLight(0xff9000, 0.5, 10, 2);
-pointLight.position.set(1, -0.5, 1);
+// Spot light
+const spotLight = new THREE.SpotLight(0xffffff, 0.3, 10, Math.PI * 0.3);
+spotLight.castShadow = true;
+
+spotLight.shadow.mapSize.width = 1024;
+spotLight.shadow.mapSize.height = 1024;
+
+spotLight.shadow.camera.near = 1;
+spotLight.shadow.camera.far = 6;
+
+spotLight.shadow.camera.fov = 30;
+
+spotLight.position.set(0, 2, 2);
+scene.add(spotLight);
+scene.add(spotLight.target);
+
+const spotLightCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+spotLightCameraHelper.visible = false;
+scene.add(spotLightCameraHelper);
+
+// Point light
+const pointLight = new THREE.PointLight(0xffffff, 0.3);
+
+pointLight.castShadow = true;
+
+pointLight.shadow.mapSize.width = 1024;
+pointLight.shadow.mapSize.height = 1024;
+
+pointLight.shadow.camera.near = 0.1;
+pointLight.shadow.camera.far = 5;
+
+pointLight.position.set(-1, 1, 0);
 scene.add(pointLight);
 
-const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1);
-rectAreaLight.lookAt(new THREE.Vector3());
-scene.add(rectAreaLight);
+const pointLightCameraHelper = new THREE.CameraHelper(pointLight.shadow.camera);
+pointLightCameraHelper.visible = false;
+scene.add(pointLightCameraHelper);
 
-const spotLight = new THREE.SpotLight(
-  0x78ff00,
-  0.5,
-  10,
-  Math.PI * 0.1,
-  0.25,
-  1
+/**
+ * Materials
+ */
+const material = new THREE.MeshStandardMaterial();
+material.roughness = 0.7;
+gui.add(material, "metalness").min(0).max(1).step(0.001);
+gui.add(material, "roughness").min(0).max(1).step(0.001);
+
+/**
+ * Objects
+ */
+const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
+sphere.castShadow = true;
+
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
+// plane.receiveShadow = true
+plane.rotation.x = -Math.PI * 0.5;
+plane.position.y = -0.5;
+
+const sphereShadow = new THREE.Mesh(
+  new THREE.PlaneGeometry(1.5, 1.5),
+  new THREE.MeshBasicMaterial({
+    color: 0x000000,
+    transparent: true,
+    alphaMap: simpleShadow,
+  })
 );
-spotLight.position.set(0, 2, 3);
-spotLight.target.position.x = -0.75;
-scene.add(spotLight.target);
-scene.add(spotLight);
+sphereShadow.rotation.x = -Math.PI * 0.5;
+sphereShadow.position.y = plane.position.y + 0.01;
 
-const hemisphereLightHelper = new THREE.HemisphereLightHelper(
-  hemisphereLight,
-  0.2
-);
-scene.add(hemisphereLightHelper);
+scene.add(sphere, sphereShadow, plane);
 
-const directionalLightHelper = new THREE.DirectionalLightHelper(
-  directionalLight,
-  0.2
-);
-scene.add(directionalLightHelper);
+/**
+ * Sizes
+ */
+const sizes = {
+  width: window.innerWidth,
+  height: window.innerHeight,
+};
 
-const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.2);
-scene.add(pointLightHelper);
+window.addEventListener("resize", () => {
+  // Update sizes
+  sizes.width = window.innerWidth;
+  sizes.height = window.innerHeight;
 
-const spotLightHelper = new THREE.SpotLightHelper(spotLight);
-scene.add(spotLightHelper);
-window.requestAnimationFrame(() => {
-  spotLightHelper.update();
+  // Update camera
+  camera.aspect = sizes.width / sizes.height;
+  camera.updateProjectionMatrix();
+
+  // Update renderer
+  renderer.setSize(sizes.width, sizes.height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
-const rectAreaLightHelper = new RectAreaLightHelper(rectAreaLight);
-scene.add(rectAreaLightHelper);
+/**
+ * Camera
+ */
+// Base camera
+const camera = new THREE.PerspectiveCamera(
+  75,
+  sizes.width / sizes.height,
+  0.1,
+  100
+);
+camera.position.x = 1;
+camera.position.y = 1;
+camera.position.z = 2;
+scene.add(camera);
 
-gui.add(spotLight, "intensity").min(0).max(1).step(0.001);
-
-//Renderer
-const canvas = document.querySelector("canvas.webgl");
-const renderer = new THREE.WebGLRenderer({
-  canvas: canvas,
-});
-
-renderer.setSize(sizes.width, sizes.height);
-
-//Controls
+// Controls
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 
-//Debug
-gui.add(meshStandardMaterial, "metalness").min(0).max(1).step(0.0001);
-gui.add(meshStandardMaterial, "roughness").min(0).max(1).step(0.0001);
+/**
+ * Renderer
+ */
+const renderer = new THREE.WebGLRenderer({
+  canvas: canvas,
+});
+renderer.shadowMap.enabled = false;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.setSize(sizes.width, sizes.height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+/**
+ * Animate
+ */
 const clock = new THREE.Clock();
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
 
-  // Update objects
-  sphere.rotation.y = 0.1 * elapsedTime;
-  plane.rotation.y = 0.1 * elapsedTime;
-  torus.rotation.y = 0.1 * elapsedTime;
-
-  sphere.rotation.x = 0.15 * elapsedTime;
-  plane.rotation.x = 0.15 * elapsedTime;
-  torus.rotation.x = 0.15 * elapsedTime;
-
-  renderer.render(scene, camera);
-  window.requestAnimationFrame(tick);
+  // Update controls
   controls.update();
+
+  // Update the sphere
+  sphere.position.x = Math.cos(elapsedTime) * 1.5;
+  sphere.position.z = Math.sin(elapsedTime) * 1.5;
+  sphere.position.y = Math.abs(Math.sin(elapsedTime * 3));
+
+  // Update the shadow
+  sphereShadow.position.x = sphere.position.x;
+  sphereShadow.position.z = sphere.position.z;
+  sphereShadow.material.opacity = (1 - sphere.position.y) * 0.3;
+
+  // Render
+  renderer.render(scene, camera);
+
+  // Call tick again on the next frame
+  window.requestAnimationFrame(tick);
 };
 
 tick();
