@@ -6,6 +6,12 @@
 
 ## Progress
 
+## Day 7
+- Today I created a haunted house scene using my knowledge of the previous lessons
+- Learned about a fog class pretty handy in this case right ?
+
+![image](https://user-images.githubusercontent.com/65627237/159586788-c8d098b3-0534-4dba-868f-0c8cd7279da7.png)
+
 ## Day 6
 
 - Today I learned about lights and shadows. Some of them provider helpers which can be useful to visualize where the light is going.
