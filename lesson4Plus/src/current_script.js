@@ -19,6 +19,7 @@ const scene = new THREE.Scene();
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
+const particleTexture = textureLoader.load("./particles/2.png");
 
 /**
  * Particles
@@ -28,9 +29,10 @@ const textureLoader = new THREE.TextureLoader();
 
 // Geometry
 const particlesGeometry = new THREE.BufferGeometry();
-const count = 500;
+const count = 20000;
 
 const positions = new Float32Array(count * 3); // Multiply by 3 because each position is composed of 3 values (x, y, z)
+const colors = new Float32Array(count * 3);
 
 for (
   let i = 0;
@@ -38,18 +40,28 @@ for (
   i++ // Multiply by 3 for same reason
 ) {
   positions[i] = (Math.random() - 0.5) * 10; // Math.random() - 0.5 to have a random value between -0.5 and +0.5
+  colors[i] = Math.random();
 }
-
-particlesGeometry.setAttribute(
-  "position",
-  new THREE.BufferAttribute(positions, 3)
-); // Create the Three.js
 
 // Material
 const particlesMaterial = new THREE.PointsMaterial({
-  size: 0.02,
+  size: 0.1,
   sizeAttenuation: true,
 });
+particlesGeometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(positions, 3)
+);
+particlesGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+particlesMaterial.vertexColors = true;
+particlesMaterial.color = new THREE.Color("#ff88cc");
+particlesMaterial.map = particleTexture;
+particlesMaterial.transparent = true;
+particlesMaterial.alphaMap = particleTexture;
+// particlesMaterial.alphaTest = 0.001
+//particlesMaterial.depthTest = false;
+particlesMaterial.depthWrite = false;
+particlesMaterial.blending = THREE.AdditiveBlending;
 
 const particles = new THREE.Points(particlesGeometry, particlesMaterial);
 scene.add(particles);
@@ -118,6 +130,8 @@ const clock = new THREE.Clock();
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
+
+  particles.rotation.y = elapsedTime * 0.2;
 
   // Update controls
   controls.update();
