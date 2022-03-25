@@ -16,144 +16,41 @@ const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 
 /**
- * Textures
+ * Objects
  */
-const textureLoader = new THREE.TextureLoader();
+const object1 = new THREE.Mesh(
+  new THREE.SphereGeometry(0.5, 16, 16),
+  new THREE.MeshBasicMaterial({ color: "#ff0000" })
+);
+object1.position.x = -2;
 
-const parameters = {};
-parameters.count = 100000;
-parameters.size = 0.01;
-parameters.radius = 5;
-parameters.branches = 3;
-parameters.spin = 1;
-parameters.randomness = 0.2;
-parameters.randomnessPower = 3;
-parameters.insideColor = "#ff6030";
-parameters.outsideColor = "#1b3984";
+const object2 = new THREE.Mesh(
+  new THREE.SphereGeometry(0.5, 16, 16),
+  new THREE.MeshBasicMaterial({ color: "#ff0000" })
+);
 
-let geometry = null;
-let material = null;
-let points = null;
+const object3 = new THREE.Mesh(
+  new THREE.SphereGeometry(0.5, 16, 16),
+  new THREE.MeshBasicMaterial({ color: "#ff0000" })
+);
+object3.position.x = 2;
+
+scene.add(object1, object2, object3);
 
 /**
- * Galaxy
+ * Raycaster
  */
-const generateGalaxy = () => {
-  // Destroy old galaxy
-  if (points !== null) {
-    geometry.dispose();
-    material.dispose();
-    scene.remove(points);
-  }
-  /**
-   * Geometry
-   */
-  geometry = new THREE.BufferGeometry();
-  const positions = new Float32Array(parameters.count * 3);
-  const colors = new Float32Array(parameters.count * 3);
-  const colorInside = new THREE.Color(parameters.insideColor);
-  const colorOutside = new THREE.Color(parameters.outsideColor);
+const raycaster = new THREE.Raycaster();
+// const rayOrigin = new THREE.Vector3(-3, 0, 0);
+// const rayDirection = new THREE.Vector3(10, 0, 0);
+// rayDirection.normalize();
 
-  for (let i = 0; i < parameters.count; i++) {
-    const i3 = i * 3;
+// raycaster.set(rayOrigin, rayDirection);
+// const intersect = raycaster.intersectObject(object2);
+// console.log(intersect);
 
-    const radius = Math.random() * parameters.radius;
-    const mixedColor = colorInside.clone();
-    mixedColor.lerp(colorOutside, radius / parameters.radius);
-
-    const spinAngle = radius * parameters.spin;
-    const branchAngle =
-      ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
-
-    const randomX =
-      Math.pow(Math.random(), parameters.randomnessPower) *
-      (Math.random() < 0.5 ? 1 : -1) *
-      parameters.randomness *
-      radius;
-    const randomY =
-      Math.pow(Math.random(), parameters.randomnessPower) *
-      (Math.random() < 0.5 ? 1 : -1) *
-      parameters.randomness *
-      radius;
-    const randomZ =
-      Math.pow(Math.random(), parameters.randomnessPower) *
-      (Math.random() < 0.5 ? 1 : -1) *
-      parameters.randomness *
-      radius;
-
-    colors[i3] = mixedColor.r;
-    colors[i3 + 1] = mixedColor.g;
-    colors[i3 + 2] = mixedColor.b;
-
-    positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
-    positions[i3 + 1] = randomY;
-    positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
-  }
-
-  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-
-  /**
-   * Material
-   */
-  material = new THREE.PointsMaterial({
-    size: parameters.size,
-    sizeAttenuation: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-    vertexColors: true,
-  });
-
-  points = new THREE.Points(geometry, material);
-  scene.add(points);
-};
-
-generateGalaxy();
-gui
-  .add(parameters, "count")
-  .min(100)
-  .max(1000000)
-  .step(100)
-  .onFinishChange(generateGalaxy);
-gui
-  .add(parameters, "size")
-  .min(0.001)
-  .max(0.1)
-  .step(0.001)
-  .onFinishChange(generateGalaxy);
-gui
-  .add(parameters, "radius")
-  .min(0.01)
-  .max(20)
-  .step(0.01)
-  .onFinishChange(generateGalaxy);
-gui
-  .add(parameters, "branches")
-  .min(2)
-  .max(20)
-  .step(1)
-  .onFinishChange(generateGalaxy);
-gui
-  .add(parameters, "spin")
-  .min(-5)
-  .max(5)
-  .step(0.001)
-  .onFinishChange(generateGalaxy);
-gui
-  .add(parameters, "randomness")
-  .min(0)
-  .max(2)
-  .step(0.001)
-  .onFinishChange(generateGalaxy);
-gui
-  .add(parameters, "randomnessPower")
-  .min(1)
-  .max(10)
-  .step(0.001)
-  .onFinishChange(generateGalaxy);
-gui.addColor(parameters, "insideColor").onFinishChange(generateGalaxy);
-gui.addColor(parameters, "outsideColor").onFinishChange(generateGalaxy);
+// const intersects = raycaster.intersectObjects([object1, object2, object3]);
+// console.log(intersects);
 
 /**
  * Sizes
@@ -204,12 +101,48 @@ renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 /**
+ * Mouse
+ */
+const mouse = new THREE.Vector2();
+
+window.addEventListener("mousemove", (event) => {
+  mouse.x = (event.clientX / sizes.width) * 2 - 1;
+  mouse.y = -(event.clientY / sizes.height) * 2 + 1;
+
+  console.log(mouse);
+});
+
+/**
  * Animate
  */
 const clock = new THREE.Clock();
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
+
+  // Animate objects
+  object1.position.y = Math.sin(elapsedTime * 0.3) * 1.5;
+  object2.position.y = Math.sin(elapsedTime * 0.8) * 1.5;
+  object3.position.y = Math.sin(elapsedTime * 1.4) * 1.5;
+
+  // Cast a ray
+  const rayOrigin = new THREE.Vector3(-3, 0, 0);
+  const rayDirection = new THREE.Vector3(1, 0, 0);
+  rayDirection.normalize();
+
+  raycaster.set(rayOrigin, rayDirection);
+
+  const objectsToTest = [object1, object2, object3];
+  const intersects = raycaster.intersectObjects(objectsToTest);
+  console.log(intersects);
+
+  for (const object of objectsToTest) {
+    object.material.color.set("#ff0000");
+  }
+
+  for (const intersect of intersects) {
+    intersect.object.material.color.set("#0000ff");
+  }
 
   // Update controls
   controls.update();
@@ -222,15 +155,6 @@ const tick = () => {
 };
 
 tick();
-
-window.addEventListener("resize", () => {
-  sizes.width = window.innerWidth;
-  sizes.height = window.innerHeight;
-  camera.aspect = sizes.width / sizes.height;
-  camera.updateProjectionMatrix();
-  renderer.setSize(sizes.width, sizes.height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-});
 
 window.addEventListener("dblclick", () => {
   const fullscreenElement =
