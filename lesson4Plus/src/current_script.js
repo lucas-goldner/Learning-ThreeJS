@@ -116,6 +116,7 @@ window.addEventListener("mousemove", (event) => {
  * Animate
  */
 const clock = new THREE.Clock();
+let currentIntersect = null;
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
@@ -132,16 +133,33 @@ const tick = () => {
 
   raycaster.set(rayOrigin, rayDirection);
 
+  raycaster.setFromCamera(mouse, camera);
+
   const objectsToTest = [object1, object2, object3];
   const intersects = raycaster.intersectObjects(objectsToTest);
-  console.log(intersects);
 
-  for (const object of objectsToTest) {
-    object.material.color.set("#ff0000");
+  if (intersects.length) {
+    if (!currentIntersect) {
+      console.log("mouse enter");
+    }
+
+    currentIntersect = intersects[0];
+  } else {
+    if (currentIntersect) {
+      console.log("mouse leave");
+    }
+
+    currentIntersect = null;
   }
 
   for (const intersect of intersects) {
     intersect.object.material.color.set("#0000ff");
+  }
+
+  for (const object of objectsToTest) {
+    if (!intersects.find((intersect) => intersect.object === object)) {
+      object.material.color.set("#ff0000");
+    }
   }
 
   // Update controls
