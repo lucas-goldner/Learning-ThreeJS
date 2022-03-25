@@ -6,6 +6,13 @@
 
 ## Progress
 
+## Day 8
+- Today I learned about Particles. Particles are great. You can do really creative stuff with it.
+- Made a wave animation using many many many particles
+
+![image](https://user-images.githubusercontent.com/65627237/160023243-040585b0-e0d1-41c4-b44e-d2d8f02940c0.png)
+![image](https://user-images.githubusercontent.com/65627237/160023199-34b87d52-9f3c-412e-9ee2-723f2e835e24.png)
+
 ## Day 7
 - Today I created a haunted house scene using my knowledge of the previous lessons
 - Learned about a fog class pretty handy in this case right ?
