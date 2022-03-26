@@ -6,6 +6,12 @@
 
 ## Progress
 
+## Day 9
+- Today I made an entire galaxy only made out of particles, which I learned about yesterday.
+- Also learned about raycasts, which are usefull by themself, but also important for registering mouse events like hover/click.
+
+![image](https://user-images.githubusercontent.com/65627237/160214789-c3975699-da28-4aaa-aba1-1090e87cbec7.png)
+
 ## Day 8
 - Today I learned about Particles. Particles are great. You can do really creative stuff with it.
 - Made a wave animation using many many many particles
