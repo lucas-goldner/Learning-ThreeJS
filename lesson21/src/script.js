@@ -88,8 +88,23 @@ window.addEventListener("scroll", () => {
 });
 
 /**
+ * Cursor
+ */
+const cursor = {};
+cursor.x = 0;
+cursor.y = 0;
+window.addEventListener("mousemove", (event) => {
+  cursor.x = event.clientX / sizes.width - 0.5;
+  cursor.y = event.clientY / sizes.height - 0.5;
+});
+
+/**
  * Camera
  */
+// Group
+const cameraGroup = new THREE.Group();
+scene.add(cameraGroup);
+
 // Base camera
 const camera = new THREE.PerspectiveCamera(
   35,
@@ -98,7 +113,7 @@ const camera = new THREE.PerspectiveCamera(
   100
 );
 camera.position.z = 6;
-scene.add(camera);
+cameraGroup.add(camera);
 
 /**
  * Lights
@@ -121,10 +136,13 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
  * Animate
  */
 const clock = new THREE.Clock();
+let previousTime = 0;
 const sectionMeshes = [mesh1, mesh2, mesh3];
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
+  const deltaTime = elapsedTime - previousTime;
+  previousTime = elapsedTime;
 
   // Animate meshes
   for (const mesh of sectionMeshes) {
@@ -137,6 +155,13 @@ const tick = () => {
 
   // Animate camera
   camera.position.y = (-scrollY / sizes.height) * objectsDistance;
+
+  const parallaxX = cursor.x * 0.6;
+  const parallaxY = -cursor.y * 0.6;
+  cameraGroup.position.x +=
+    (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
+  cameraGroup.position.y +=
+    (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
