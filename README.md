@@ -6,6 +6,15 @@
 
 ## Progress
 
+## Day 10
+- Today felt so awarding. I learned how to integrate ThreeJS into a common HTML website in the background and the result was stunning.
+- Also learned today about physics, which open up many more possibilites. I used cannonjs today, but ammojs is also popular
+
+![Screen-Recording-2022-03-27-at-00 11 11](https://user-images.githubusercontent.com/65627237/160260080-2d56ba99-b981-4351-aaa0-559811ea21e3.gif)
+![image](https://user-images.githubusercontent.com/65627237/160259950-206a6c75-b201-4795-9584-b796512db414.png)
+
+
+
 ## Day 9
 - Today I made an entire galaxy only made out of particles, which I learned about yesterday.
 - Also learned about raycasts, which are usefull by themself, but also important for registering mouse events like hover/click.
