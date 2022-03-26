@@ -8,6 +8,7 @@ import CANNON from "cannon";
  * Debug
  */
 const gui = new dat.GUI();
+const debugObject = {};
 
 /**
  * Base
@@ -35,14 +36,6 @@ const defaultContactMaterial = new CANNON.ContactMaterial(
 );
 world.defaultContactMaterial = defaultContactMaterial;
 
-const sphereShape = new CANNON.Sphere(0.5);
-const sphereBody = new CANNON.Body({
-  mass: 1,
-  position: new CANNON.Vec3(0, 3, 0),
-  shape: sphereShape,
-});
-sphereBody.material = defaultMaterial;
-world.addBody(sphereBody);
 const floorShape = new CANNON.Plane();
 const floorBody = new CANNON.Body();
 floorBody.mass = 0;
@@ -65,22 +58,6 @@ const environmentMapTexture = cubeTextureLoader.load([
   "/textures/environmentMaps/0/pz.png",
   "/textures/environmentMaps/0/nz.png",
 ]);
-
-/**
- * Test sphere
- */
-const sphere = new THREE.Mesh(
-  new THREE.SphereGeometry(0.5, 32, 32),
-  new THREE.MeshStandardMaterial({
-    metalness: 0.3,
-    roughness: 0.4,
-    envMap: environmentMapTexture,
-    envMapIntensity: 0.5,
-  })
-);
-sphere.castShadow = true;
-sphere.position.y = 0.5;
-scene.add(sphere);
 
 /**
  * Floor
@@ -167,10 +144,57 @@ renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 /**
+ * Utils
+ */
+
+const objectsToUpdate = [];
+
+const createSphere = (radius, position) => {
+  // Three.js mesh
+  const mesh = new THREE.Mesh(
+    new THREE.SphereGeometry(radius, 20, 20),
+    new THREE.MeshStandardMaterial({
+      metalness: 0.3,
+      roughness: 0.4,
+      envMap: environmentMapTexture,
+      envMapIntensity: 0.5,
+    })
+  );
+  mesh.castShadow = true;
+  mesh.position.copy(position);
+  scene.add(mesh);
+
+  // Cannon.js body
+  const shape = new CANNON.Sphere(radius);
+
+  const body = new CANNON.Body({
+    mass: 1,
+    position: new CANNON.Vec3(0, 3, 0),
+    shape: shape,
+    material: defaultMaterial,
+  });
+  body.position.copy(position);
+  world.addBody(body);
+
+  // Save in objects to update
+  objectsToUpdate.push({ mesh, body });
+};
+
+/**
  * Animate
  */
 const clock = new THREE.Clock();
 let oldElapsedTime = 0;
+
+createSphere(0.5, { x: 0, y: 3, z: 0 });
+debugObject.createSphere = () => {
+  createSphere(Math.random() * 0.5, {
+    x: (Math.random() - 0.5) * 3,
+    y: 3,
+    z: (Math.random() - 0.5) * 3,
+  });
+};
+gui.add(debugObject, "createSphere");
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
@@ -179,7 +203,9 @@ const tick = () => {
 
   // Update physics
   world.step(1 / 60, deltaTime, 3);
-  sphere.position.copy(sphereBody.position);
+  for (const object of objectsToUpdate) {
+    object.mesh.position.copy(object.body.position);
+  }
 
   // Update controls
   controls.update();
