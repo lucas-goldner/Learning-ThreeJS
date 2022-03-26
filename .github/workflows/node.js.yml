@@ -6,13 +6,13 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
-      - name: Install and Build 
+      - name: Install and Build
         run: |
-          cd lesson4Plus/
+          cd lesson22Plus/
           npm i
           npm run build
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: gh-pages # The branch the action should deploy to.
-          folder: lesson4Plus/dist # The folder the action should deploy.
+          folder: lesson22Plus/dist # The folder the action should deploy.
