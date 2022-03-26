@@ -52,15 +52,6 @@ world.addBody(floorBody);
 const textureLoader = new THREE.TextureLoader();
 const cubeTextureLoader = new THREE.CubeTextureLoader();
 
-const environmentMapTexture = cubeTextureLoader.load([
-  "/textures/environmentMaps/0/px.png",
-  "/textures/environmentMaps/0/nx.png",
-  "/textures/environmentMaps/0/py.png",
-  "/textures/environmentMaps/0/ny.png",
-  "/textures/environmentMaps/0/pz.png",
-  "/textures/environmentMaps/0/nz.png",
-]);
-
 /**
  * Floor
  */
@@ -70,7 +61,7 @@ const floor = new THREE.Mesh(
     color: "#777777",
     metalness: 0.3,
     roughness: 0.4,
-    envMap: environmentMapTexture,
+
     envMapIntensity: 0.5,
   })
 );
@@ -146,6 +137,20 @@ renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 /**
+ * Sounds
+ */
+const hitSound = new Audio("./sounds/hit.mp3");
+
+const playHitSound = (collision) => {
+  const impactStrength = collision.contact.getImpactVelocityAlongNormal();
+  if (impactStrength > 1.5) {
+    hitSound.volume = Math.random();
+    hitSound.currentTime = 0;
+    hitSound.play();
+  }
+};
+
+/**
  * Utils
  */
 
@@ -154,7 +159,7 @@ const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
 const sphereMaterial = new THREE.MeshStandardMaterial({
   metalness: 0.3,
   roughness: 0.4,
-  envMap: environmentMapTexture,
+
   envMapIntensity: 0.5,
 });
 
@@ -177,6 +182,8 @@ const createSphere = (radius, position) => {
   });
   body.position.copy(position);
   world.addBody(body);
+
+  body.addEventListener("collide", playHitSound);
 
   // Save in objects to update
   objectsToUpdate.push({ mesh, body });
@@ -203,7 +210,7 @@ const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 const boxMaterial = new THREE.MeshStandardMaterial({
   metalness: 0.3,
   roughness: 0.4,
-  envMap: environmentMapTexture,
+
   envMapIntensity: 0.5,
 });
 const createBox = (width, height, depth, position) => {
@@ -228,6 +235,8 @@ const createBox = (width, height, depth, position) => {
   body.position.copy(position);
   world.addBody(body);
 
+  body.addEventListener("collide", playHitSound);
+
   // Save in objects
   objectsToUpdate.push({ mesh, body });
 };
@@ -242,6 +251,20 @@ debugObject.createBox = () => {
   });
 };
 gui.add(debugObject, "createBox");
+
+// Reset
+debugObject.reset = () => {
+  for (const object of objectsToUpdate) {
+    // Remove body
+    object.body.removeEventListener("collide", playHitSound);
+    world.removeBody(object.body);
+
+    // Remove mesh
+    scene.remove(object.mesh);
+  }
+  objectsToUpdate.splice(0, objectsToUpdate.length);
+};
+gui.add(debugObject, "reset");
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
