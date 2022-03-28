@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "lil-gui";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 
 //Get 3D models at https://github.com/KhronosGroup/glTF-Sample-Models
 
@@ -37,16 +38,23 @@ scene.add(floor);
  * Models
  */
 const gltfLoader = new GLTFLoader();
-gltfLoader.load("./models/Duck/glTF/Duck.gltf", (gltf) => {
+// gltfLoader.load("./models/Duck/glTF/Duck.gltf", (gltf) => {
+//   const duck = gltf.scene.children[0];
+//   duck.position.z = 2;
+//   scene.add(duck);
+// });
+
+// gltfLoader.load("./models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
+//   scene.add(gltf.scene);
+// });
+
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath("/draco/");
+gltfLoader.setDRACOLoader(dracoLoader);
+gltfLoader.load("./models/Duck/glTF-Draco/Duck.gltf", (gltf) => {
   const duck = gltf.scene.children[0];
   duck.position.z = 2;
   scene.add(duck);
-});
-
-gltfLoader.load("./models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
-  while (gltf.scene.children.length) {
-    scene.add(gltf.scene.children[0]);
-  }
 });
 
 /**
