@@ -2,6 +2,7 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "lil-gui";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 //Get 3D models at https://github.com/KhronosGroup/glTF-Sample-Models
 
@@ -31,6 +32,14 @@ const floor = new THREE.Mesh(
 floor.receiveShadow = true;
 floor.rotation.x = -Math.PI * 0.5;
 scene.add(floor);
+
+/**
+ * Models
+ */
+const gltfLoader = new GLTFLoader();
+gltfLoader.load("./models/Duck/glTF/Duck.gltf", (gltf) => {
+  scene.add(gltf.scene.children[0]);
+});
 
 /**
  * Lights
