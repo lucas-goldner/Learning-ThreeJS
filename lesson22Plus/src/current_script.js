@@ -57,10 +57,17 @@ gltfLoader.load("./models/Duck/glTF-Draco/Duck.gltf", (gltf) => {
   scene.add(duck);
 });
 
+//Animation
+let mixer = null;
+
 gltfLoader.load("/models/Fox/glTF/Fox.gltf", (gltf) => {
-  const fox = gltf.scene.children[0];
-  fox.scale.set(0.025, 0.025, 0.025);
-  scene.add(fox);
+  gltf.scene.scale.set(0.03, 0.03, 0.03);
+  gltf.scene.rotateY(2);
+  scene.add(gltf.scene);
+
+  mixer = new THREE.AnimationMixer(gltf.scene);
+  const action = mixer.clipAction(gltf.animations[2]);
+  action.play();
 });
 
 /**
@@ -144,6 +151,10 @@ const tick = () => {
 
   // Update controls
   controls.update();
+
+  if (mixer) {
+    mixer.update(deltaTime);
+  }
 
   // Render
   renderer.render(scene, camera);
