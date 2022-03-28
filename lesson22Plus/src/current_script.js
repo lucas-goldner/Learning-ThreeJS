@@ -57,6 +57,12 @@ gltfLoader.load("./models/Duck/glTF-Draco/Duck.gltf", (gltf) => {
   scene.add(duck);
 });
 
+gltfLoader.load("/models/Fox/glTF/Fox.gltf", (gltf) => {
+  const fox = gltf.scene.children[0];
+  fox.scale.set(0.025, 0.025, 0.025);
+  scene.add(fox);
+});
+
 /**
  * Lights
  */
