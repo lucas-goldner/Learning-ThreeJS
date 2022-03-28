@@ -6,14 +6,17 @@
 
 ## Progress
 
+## Day 11
+- Today I learned about importing 3D models in ThreeJS. Never heard of it before, but apparently .gltf is commonly used.
+- Also made one of my two objects use their animations. The result was a running fox.
+![Screen-Recording-2022-03-29-at-0](https://user-images.githubusercontent.com/65627237/160496535-40a49376-dffa-432e-bde1-89e2c5f29200.gif)
+
 ## Day 10
 - Today felt so awarding. I learned how to integrate ThreeJS into a common HTML website in the background and the result was stunning.
 - Also learned today about physics, which open up many more possibilites. I used cannonjs today, but ammojs is also popular
 
 ![Screen-Recording-2022-03-27-at-00 11 11](https://user-images.githubusercontent.com/65627237/160260080-2d56ba99-b981-4351-aaa0-559811ea21e3.gif)
 ![image](https://user-images.githubusercontent.com/65627237/160259950-206a6c75-b201-4795-9584-b796512db414.png)
-
-
 
 ## Day 9
 - Today I made an entire galaxy only made out of particles, which I learned about yesterday.
